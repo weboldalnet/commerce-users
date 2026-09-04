@@ -1,21 +1,28 @@
 {
-    "name": "weboldalnet/package-template",
-    "description": "teszt",
+    "name": "weboldalnet/commerce-users",
+    "description": "Webshop felhasználó modul a commerce-core-hoz",
     "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Weboldalnet",
+            "email": "kerekesadam@weboldalnet.hu"
+        }
+    ],
     "autoload": {
         "psr-4": {
-            "Weboldalnet\\PackageTemplate\\": [ "src/",  "app/"]
+            "Weboldalnet\\CommerceUsers\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Weboldalnet\\PackageTemplate\\ArticleServiceProvider"
-            ],
-            "aliases": {
-                "ArticleServiceProvider": "Weboldalnet\\PackageTemplate\\ArticleServiceProvider"
-            }
+                "Weboldalnet\\CommerceUsers\\CommerceUsersServiceProvider"
+            ]
         }
     },
-    "require": {}
+    "require": {
+        "php": "^8.2",
+        "weboldalnet/commerce-core": "^1.0"
+    }
 }

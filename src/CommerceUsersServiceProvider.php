@@ -1,21 +1,21 @@
 <?php
 
-namespace Weboldalnet\PackageTemplate;
+namespace Weboldalnet\CommerceUsers;
 
 use Illuminate\Support\ServiceProvider;
-use Weboldalnet\PackageTemplate\Support\PackageHelper;
-use Weboldalnet\PackageTemplate\Console\ExtendViewsArticlesCommand;
-use Weboldalnet\PackageTemplate\Console\InstallArticlesCommand;
+use Weboldalnet\CommerceUsers\Support\PackageHelper;
+use Weboldalnet\CommerceUsers\Console\ExtendViewsCommerceUsersCommand;
+use Weboldalnet\CommerceUsers\Console\InstallCommerceUsersCommand;
 
-class ArticleServiceProvider extends ServiceProvider
+class CommerceUsersServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        // route-ok
+        // route-ok és admin nézetek
         $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         $this->loadViewsFrom(__DIR__.'/../settings/views', PackageHelper::PACKAGE_PREFIX);
 
-        // migrációk
+        // migrációk – a modul saját tábláinak elkészítésekor kell aktiválni
         //$this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
         $publishList = [];
@@ -32,12 +32,11 @@ class ArticleServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->commands([
-            InstallArticlesCommand::class,
-        ]);
+        $this->mergeConfigFrom(__DIR__.'/../config/commerce-users.php', 'commerce-users');
 
         $this->commands([
-            ExtendViewsArticlesCommand::class,
+            InstallCommerceUsersCommand::class,
+            ExtendViewsCommerceUsersCommand::class,
         ]);
     }
 }

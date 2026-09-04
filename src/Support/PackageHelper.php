@@ -1,32 +1,27 @@
 <?php
 
-namespace Weboldalnet\PackageTemplate\Support;
+namespace Weboldalnet\CommerceUsers\Support;
 
 class PackageHelper
 {
-    const PACKAGE_NAME = 'Blog/Cikkek modul';
-    const PACKAGE_PREFIX = 'article';
+    const PACKAGE_NAME = 'Webshop felhasználó modul';
+    const PACKAGE_PREFIX = 'commerce-users';
 
     const PACKAGE_LIST = [
-        'app' => [
-            'name' => 'app | app/',
-            'source' => __DIR__.'/../../app',
-            'destination' => '/app',
+        'routes' => [
+            'name' => 'routes | routes/web.php',
+            'source' => __DIR__.'/../../routes/web.php',
+            'destination' => '/routes/commerce-users.php',
         ],
-        'database' => [
-            'name' => 'database | database/migrations',
-            'source' => __DIR__.'/../../database/migrations',
-            'destination' => '/database/migrations',
+        'settings' => [
+            'name' => 'settings | settings/',
+            'source' => __DIR__.'/../../settings',
+            'destination' => '/settings/commerce-users',
         ],
-        'public' => [
-            'name' => 'public | public/js,site',
-            'source' => __DIR__.'/../../public',
-            'destination' => '/public',
-        ],
-        'views' => [
-            'name' => 'views | resources/views',
-            'source' => __DIR__.'/../../resources/views',
-            'destination' => '/resources/views',
+        'config' => [
+            'name' => 'config | config/commerce-users.php',
+            'source' => __DIR__.'/../../config/commerce-users.php',
+            'destination' => '/config/commerce-users.php',
         ],
     ];
 
