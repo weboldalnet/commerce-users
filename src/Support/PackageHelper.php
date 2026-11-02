@@ -23,7 +23,20 @@ class PackageHelper
             'source' => __DIR__.'/../../config/commerce-users.php',
             'destination' => '/config/commerce-users.php',
         ],
+        // a fiókoldalak stíluslapja — telepítéskor és frissítéskor ki kell rakni
+        'assets' => [
+            'name' => 'assets | public/packages/commerce-users',
+            'source' => __DIR__.'/../../public/packages/commerce-users',
+            'destination' => '/public/packages/commerce-users',
+        ],
     ];
+
+    /**
+     * A nézetek SZÁNDÉKOSAN nincsenek a fenti listában (és így az `-all` tagben sem): egy
+     * kirakott nézet minden későbbi csomagfrissítést elfedne. Egyedi átalakításhoz külön
+     * kérhető: `vendor:publish --tag=commerce-users-views`, majd csak a módosított fájl maradjon.
+     */
+    const VIEWS_SOURCE = __DIR__.'/../../resources/views';
 
     const PACKAGE_VIEW_EXTENDS = [
         'sidebar' => [

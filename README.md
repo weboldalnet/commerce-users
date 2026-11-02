@@ -1,67 +1,112 @@
 # Webshop felhasználó modul a commerce-core-hoz
 
-Ez a csomag a webshop felhasználó- és fiókkezelését adja a `weboldalnet/commerce-core` alapú rendszerekhez.
+Vásárlói fiókok a `weboldalnet/commerce-core` alapú webshopokhoz: regisztráció e-mailes aktiválással,
+bejelentkezés, elfelejtett jelszó, profil, jelszócsere, szállítási és számlázási címek, valamint egy
+admin vásárlólista. A webshophoz kötött részeket (Rendeléseim, újrarendelés, a pénztár kitöltése, a
+kapcsolók) a befogadó adja — a `weboldalnet/webshop-ai-default` 1.1.17-től beépítetten.
 
-> **Állapot:** csomagváz. A struktúra és az elnevezések készen állnak (composer autoload,
-> service provider, publish/extend parancsok, config), a tényleges funkció (modellek,
-> migrációk, regisztráció/bejelentkezés, fiókoldal, admin felület, útvonalak) még nincs megírva.
+## Funkciók
 
-A provider-csomagoktól (SimplePay, FoxPost, GLS, Barion, Számlázz.hu) eltérően ez nem
-fizetési/szállítási/számlázási szolgáltató, ezért nem jelentkezik be a `commerce-core`
-provider registry-jébe – a saját admin felületét maga hozza magával.
+| Rész | Útvonal | Megjegyzés |
+| --- | --- | --- |
+| Regisztráció | `/fiok/regisztracio` | vezetéknév, keresztnév, e-mail, jelszó + megerősítés, adatkezelési hozzájárulás; csapda-mező és IP-korlát a robotok ellen |
+| Aktiválás | `/fiok/aktivalas/{id}/{hash}` | aláírt, 48 óráig érvényes link; aktiválás nélkül nem lehet belépni; újraküldés (`/fiok/aktivalo-level`) |
+| Bejelentkezés | `/fiok/belepes` | „Maradjak bejelentkezve”, 5 sikertelen próba / perc / e-mail + IP; visszatér az eredeti oldalra (pl. pénztár) |
+| Elfelejtett jelszó | `/fiok/elfelejtett-jelszo` | 60 percig érvényes, egyszer használható link; a válasz nem árulja el, van-e fiók |
+| Profil | `/fiok` | név és telefonszám módosítása; az e-mail-cím NEM módosítható (belépési azonosító) |
+| Jelszócsere | `/fiok/jelszo` | a jelenlegi jelszóval |
+| Címek | `/fiok/cimek` | több szállítási és számlázási cím, típusonként egy elsődleges (az első magától az) |
+| Kijelentkezés | `POST /fiok/kilepes` | a munkamenet teljesen törlődik |
+| Admin | `/webshop/users` | lista (keresés, állapotszűrő), adatlap, kézi aktiválás, aktiváló levél újraküldése, letiltás, törlés |
+
+A levelek (aktiválás, új jelszó) a core levélsablonját (`mail.layouts.mail_layout`) és a bolt arculati
+színét (`ContentHelper::THEME['theme_color']`) használják, feladójuk `app.shop_email` / `app.shop_name`.
 
 ## Telepítés
 
-A projekt `composer.json`-jában:
-
 ```json
 "repositories": [
-    {
-        "type": "vcs",
-        "url": "https://github.com/weboldalnet/commerce-users"
-    }
+    { "type": "vcs", "url": "https://github.com/weboldalnet/commerce-users" }
 ]
 ```
 
 ```bash
-composer require weboldalnet/commerce-users:^1.0
+composer require weboldalnet/commerce-users:^1.1
+php artisan migrate
+php artisan vendor:publish --tag=commerce-users-assets --force
 ```
 
-A service provider Laravel package auto-discovery-vel regisztrálódik
-(`Weboldalnet\CommerceUsers\CommerceUsersServiceProvider`).
+A migráció a saját tábláit hozza (`commerce_users`, `commerce_user_addresses`,
+`commerce_user_password_resets`), a Laravel `users` táblájához nem nyúl. A modul saját guardon fut
+(`commerce_user`), a `web` és az `admin` guardtól függetlenül; a guardot, a providert és a jelszó-brokert
+a service provider futásidőben veszi fel (cache-elt confignál is).
+
+Frissítéskor a stíluslapot is újra ki kell rakni: `vendor:publish --tag=commerce-users-assets --force`.
+
+## Bekapcsolás
+
+- **Webshop projektben** (webshop-ai-default 1.1.17+): Webshop beállítások › Vásárlói fiókok fül. Ott
+  kapcsolható a modul, a kötelező belépés a vásárláshoz, a Rendeléseim (+ újrarendelés) és a címkezelés.
+- **Webshop nélkül:** `.env` → `COMMERCE_USERS_ENABLED=true`, és a befogadó saját maga köti be a
+  fejléc gombját: `@include('commerce-users::site.partials.account-button')`. Admin menüpont:
+  `php artisan commerce-users:extend --view=sidebar`.
+
+Kikapcsolt modulnál minden `/fiok/...` útvonal 404, a fejléc gombja nem jelenik meg.
+
+## Bekötés a befogadó rendszerbe
+
+```php
+use Weboldalnet\CommerceUsers\CommerceUsers;
+
+// honnan jönnek a kapcsolók ('enabled', 'addresses'); null = a modul alapértéke
+CommerceUsers::resolveFeaturesUsing(fn (string $feature) => …);
+
+// az adatkezelési tájékoztató ('privacy') és az ÁSZF ('terms') címe a regisztrációhoz
+CommerceUsers::resolveLinksUsing(fn (string $name) => …);
+
+// saját menüpont a fiókmenübe (pl. Rendeléseim); a beépítettek: profil 10, címek 30, jelszó 40
+CommerceUsers::addAccountMenuItem('orders', 'Rendeléseim', 'fa-box', 'site.webshop.account.orders', 20,
+    fn () => true, ['site.webshop.account.orders*']);
+
+CommerceUsers::user();      // a bejelentkezett vásárló vagy null
+CommerceUsers::enabled();   // be van-e kapcsolva
+```
+
+A befogadó saját fiókoldalai a modul elrendezését használhatják:
+`@extends('commerce-users::site.layouts.account')`, szekciók: `title`, `cu_title`, `cu_content`.
+Bejelentkezést kérő útvonalhoz: `->middleware(['commerce-users.enabled', 'commerce-users.auth'])`.
+
+Az admin vásárló-adatlapjára a befogadó saját panelt tehet: az adatlap
+`@includeIf('admin.webshop.users.partials.customer-orders', ['commerceUser' => …])`-t húz be.
 
 ## Konfiguráció
 
-Publikálás a projektbe:
+`config/commerce-users.php` (publikálás: `--tag=commerce-users-config`):
 
-```bash
-php artisan commerce-users:install --tag=commerce-users-all
-php artisan commerce-users:extend --view=all
-```
+| kulcs | alap | jelentés |
+| --- | --- | --- |
+| `enabled` | `false` | csak webshop nélkül számít |
+| `route_prefix` | `fiok` | a site útvonalak előtagja |
+| `activation_expire_hours` | `48` | aktiváló link érvényessége |
+| `password_reset_expire_minutes` | `60` | jelszó-visszaállító link érvényessége |
+| `password_min_length` | `8` | minimális jelszóhossz |
+| `max_addresses_per_type` | `20` | menthető címek típusonként |
 
-Publikálható tagek:
+A nézetek egyedi átalakításához: `vendor:publish --tag=commerce-users-views`, és csak a ténylegesen
+módosított fájl maradjon a projektben (a kirakott nézet a későbbi frissítéseket elfedi).
 
-| tag | tartalom |
-| --- | --- |
-| `commerce-users-routes` | `routes/web.php` → `routes/commerce-users.php` |
-| `commerce-users-settings` | `settings/` → `settings/commerce-users` |
-| `commerce-users-config` | `config/commerce-users.php` |
-| `commerce-users-all` | mindegyik |
-
-`.env` beállítások:
-
-```env
-COMMERCE_USERS_ENABLED=false
-```
-
-## Névterek és fájlszerkezet
+## Fájlszerkezet
 
 ```
-src/CommerceUsersServiceProvider.php             – service provider (publish, route, view betöltés)
-src/Console/InstallCommerceUsersCommand.php      – commerce-users:install
-src/Console/ExtendViewsCommerceUsersCommand.php  – commerce-users:extend
-src/Support/PackageHelper.php                    – publish lista és view kiegészítések
-config/commerce-users.php                        – konfiguráció
-routes/web.php                                   – útvonalak (egyelőre üres váz)
-settings/views/admin/                            – admin sidebar és package-functions blade
+src/CommerceUsers.php                    – belépési pont: kapcsolók, fiókmenü, linkek, user()
+src/CommerceUsersServiceProvider.php     – guard, middleware-ek, route-ok, nézetek, migráció
+src/Models/                              – CommerceUser, CommerceUserAddress
+src/Http/Controllers/Site/               – Auth, Register, PasswordReset, Account, Address
+src/Http/Controllers/Admin/UserController.php
+src/Http/Middleware/                     – enabled, auth, guest
+src/Services/                            – ActivationService, AddressService
+src/Mail/                                – ActivationMail, PasswordResetMail
+resources/views/site|mail|admin          – nézetek (commerce-users::…)
+public/packages/commerce-users/          – a fiókoldalak stíluslapja
+database/migrations/                     – a modul táblái (PostgreSQL 9.4-kompatibilis, idempotens)
 ```
