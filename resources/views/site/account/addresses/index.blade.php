@@ -1,13 +1,13 @@
 @extends('commerce-users::site.layouts.account')
-@section('title', 'Címeim')
-@section('cu_title', 'Címeim')
+@section('title', __('commerce-users::account.addresses.title'))
+@section('cu_title', __('commerce-users::account.addresses.title'))
 
 @section('cu_content')
     @foreach([
-        'shipping' => ['title' => 'Szállítási címek', 'addresses' => $shippingAddresses, 'new' => 'Új szállítási cím',
-            'empty' => 'Még nincs mentett szállítási címed. A pénztárban az elsődleges cím töltődik ki magától.'],
-        'billing' => ['title' => 'Számlázási címek', 'addresses' => $billingAddresses, 'new' => 'Új számlázási cím',
-            'empty' => 'Még nincs mentett számlázási címed.'],
+        'shipping' => ['title' => __('commerce-users::account.addresses.shipping_title'), 'addresses' => $shippingAddresses, 'new' => __('commerce-users::account.addresses.new_shipping'),
+            'empty' => __('commerce-users::account.addresses.empty_shipping')],
+        'billing' => ['title' => __('commerce-users::account.addresses.billing_title'), 'addresses' => $billingAddresses, 'new' => __('commerce-users::account.addresses.new_billing'),
+            'empty' => __('commerce-users::account.addresses.empty_billing')],
     ] as $cuType => $cuGroup)
         <div class="cu-card">
             <div class="cu-card-title">
@@ -26,9 +26,9 @@
                     @foreach($cuGroup['addresses'] as $cuAddress)
                         <div class="cu-address @if($cuAddress->is_default) is-default @endif">
                             <div class="cu-address-head">
-                                <span class="cu-address-label">{{ $cuAddress->label ?: ($cuType === 'billing' ? 'Számlázási cím' : 'Szállítási cím') }}</span>
+                                <span class="cu-address-label">{{ $cuAddress->label ?: ($cuType === 'billing' ? __('commerce-users::account.addresses.billing_label') : __('commerce-users::account.addresses.shipping_label')) }}</span>
                                 @if($cuAddress->is_default)
-                                    <span class="cu-badge"><i class="fa-solid fa-check"></i> Elsődleges</span>
+                                    <span class="cu-badge"><i class="fa-solid fa-check"></i> {{ __('commerce-users::account.addresses.default_badge') }}</span>
                                 @endif
                             </div>
                             <div class="cu-address-body">
@@ -36,21 +36,21 @@
                                 @if($cuAddress->company){{ $cuAddress->company }}<br>@endif
                                 {{ $cuAddress->zip }} {{ $cuAddress->city }}<br>
                                 {{ $cuAddress->address }}
-                                @if($cuAddress->tax_number)<br><span class="text-muted">Adószám: {{ $cuAddress->tax_number }}</span>@endif
-                                @if($cuAddress->phone)<br><span class="text-muted">Tel.: {{ $cuAddress->phone }}</span>@endif
+                                @if($cuAddress->tax_number)<br><span class="text-muted">{{ __('commerce-users::account.addresses.tax_number_line', ['number' => $cuAddress->tax_number]) }}</span>@endif
+                                @if($cuAddress->phone)<br><span class="text-muted">{{ __('commerce-users::account.addresses.phone_line', ['phone' => $cuAddress->phone]) }}</span>@endif
                             </div>
                             <div class="cu-address-actions">
-                                <a href="{{ route('commerce-users.addresses.edit', $cuAddress->id) }}" class="btn btn-sm btn-outline-primary">Szerkesztés</a>
+                                <a href="{{ route('commerce-users.addresses.edit', $cuAddress->id) }}" class="btn btn-sm btn-outline-primary">{{ __('commerce-users::account.addresses.edit') }}</a>
                                 @unless($cuAddress->is_default)
                                     <form method="POST" action="{{ route('commerce-users.addresses.default', $cuAddress->id) }}">
                                         @csrf
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary">Legyen elsődleges</button>
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary">{{ __('commerce-users::account.addresses.make_default') }}</button>
                                     </form>
                                 @endunless
                                 <form method="POST" action="{{ route('commerce-users.addresses.destroy', $cuAddress->id) }}"
-                                      onsubmit="return confirm('Biztosan törlöd ezt a címet?');">
+                                      onsubmit="return confirm(@js(__('commerce-users::account.addresses.delete_confirm')));">
                                     @csrf @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger">Törlés</button>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">{{ __('commerce-users::account.addresses.delete') }}</button>
                                 </form>
                             </div>
                         </div>

@@ -34,9 +34,9 @@ class AuthController extends Controller
             'email' => 'required|email|max:255',
             'password' => 'required|string|max:255',
         ], [
-            'email.required' => 'Add meg az e-mail-címed.',
-            'email.email' => 'Ez nem érvényes e-mail-cím.',
-            'password.required' => 'Add meg a jelszavad.',
+            'email.required' => __('commerce-users::common.validation.email_required'),
+            'email.email' => __('commerce-users::common.validation.email_invalid'),
+            'password.required' => __('commerce-users::auth.login.password_required'),
         ]);
 
         $email = mb_strtolower(trim($data['email']));
@@ -44,7 +44,7 @@ class AuthController extends Controller
 
         if (RateLimiter::tooManyAttempts($key, self::MAX_ATTEMPTS)) {
             throw ValidationException::withMessages([
-                'email' => 'Túl sok sikertelen próbálkozás. Próbáld újra ' . RateLimiter::availableIn($key) . ' másodperc múlva.',
+                'email' => trans_choice('commerce-users::auth.login.throttled', RateLimiter::availableIn($key)),
             ]);
         }
 
@@ -52,17 +52,17 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($data['password'], $user->password)) {
             RateLimiter::hit($key, 60);
-            throw ValidationException::withMessages(['email' => 'Hibás e-mail-cím vagy jelszó.']);
+            throw ValidationException::withMessages(['email' => __('commerce-users::auth.login.failed')]);
         }
 
         if (!$user->is_active) {
-            throw ValidationException::withMessages(['email' => 'Ez a fiók le van tiltva. Kérdés esetén vedd fel velünk a kapcsolatot.']);
+            throw ValidationException::withMessages(['email' => __('commerce-users::auth.login.disabled')]);
         }
 
         if (!$user->isVerified()) {
             return back()->withInput($request->only('email'))
                 ->with('unverified_email', $user->email)
-                ->withErrors(['email' => 'A fiókod még nincs aktiválva. Kattints az aktiváló levélben lévő linkre.']);
+                ->withErrors(['email' => __('commerce-users::auth.login.unverified')]);
         }
 
         RateLimiter::clear($key);
@@ -71,7 +71,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $user->forceFill(['last_login_at' => now()])->save();
 
-        return redirect()->intended(route('commerce-users.account'))->with('success', 'Sikeresen bejelentkeztél.');
+        return redirect()->intended(route('commerce-users.account'))->with('success', __('commerce-users::auth.login.success'));
     }
 
     public function logout(Request $request)
@@ -83,7 +83,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'Kijelentkeztél.');
+        return redirect('/')->with('success', __('commerce-users::auth.login.logged_out'));
     }
 
     /** Csak a saját oldalon belüli, relatív cím fogadható el (nyitott átirányítás ellen). */

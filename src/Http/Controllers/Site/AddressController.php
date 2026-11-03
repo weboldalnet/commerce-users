@@ -34,7 +34,7 @@ class AddressController extends Controller
 
         if (AddressService::countOfType($user, $type) >= AddressService::maxPerType()) {
             return redirect()->route('commerce-users.addresses.index')
-                ->with('error', 'Elérted a menthető címek számát. Törölj egy régit, mielőtt újat adsz hozzá.');
+                ->with('error', __('commerce-users::account.addresses.limit_reached'));
         }
 
         // új címnél a nevet előre kitöltjük a fiók nevével
@@ -55,12 +55,12 @@ class AddressController extends Controller
 
         if (AddressService::countOfType($user, $type) >= AddressService::maxPerType()) {
             return redirect()->route('commerce-users.addresses.index')
-                ->with('error', 'Elérted a menthető címek számát. Törölj egy régit, mielőtt újat adsz hozzá.');
+                ->with('error', __('commerce-users::account.addresses.limit_reached'));
         }
 
         AddressService::save($user, $type, $this->validated($request, $type));
 
-        return redirect()->route('commerce-users.addresses.index')->with('success', 'A címet elmentettük.');
+        return redirect()->route('commerce-users.addresses.index')->with('success', __('commerce-users::account.addresses.saved'));
     }
 
     public function edit(int $address)
@@ -81,7 +81,7 @@ class AddressController extends Controller
 
         AddressService::save($user, $address->type, $this->validated($request, $address->type), $address);
 
-        return redirect()->route('commerce-users.addresses.index')->with('success', 'A címet elmentettük.');
+        return redirect()->route('commerce-users.addresses.index')->with('success', __('commerce-users::account.addresses.saved'));
     }
 
     public function makeDefault(int $address)
@@ -90,7 +90,9 @@ class AddressController extends Controller
         AddressService::makeDefault($address);
 
         return redirect()->route('commerce-users.addresses.index')
-            ->with('success', 'Mostantól ez az elsődleges ' . mb_strtolower(CommerceUserAddress::TYPES[$address->type]) . '.');
+            ->with('success', $address->type === CommerceUserAddress::TYPE_BILLING
+                ? __('commerce-users::account.addresses.made_default_billing')
+                : __('commerce-users::account.addresses.made_default_shipping'));
     }
 
     public function destroy(int $address)
@@ -98,7 +100,7 @@ class AddressController extends Controller
         $address = CommerceUsers::user()->addresses()->findOrFail($address);
         AddressService::delete($address);
 
-        return redirect()->route('commerce-users.addresses.index')->with('success', 'A címet töröltük.');
+        return redirect()->route('commerce-users.addresses.index')->with('success', __('commerce-users::account.addresses.deleted'));
     }
 
     private function validated(Request $request, string $type): array
@@ -116,11 +118,13 @@ class AddressController extends Controller
             'address' => 'required|string|max:255',
             'is_default' => 'nullable|boolean',
         ], [
-            'name.required' => $isBilling ? 'Add meg a számlázási nevet.' : 'Add meg a címzett nevét.',
-            'zip.required' => 'Add meg az irányítószámot.',
-            'city.required' => 'Add meg a települést.',
-            'address.required' => 'Add meg az utcát és a házszámot.',
-            'phone.regex' => 'A telefonszámban csak számok, szóköz és a + ( ) / - jelek szerepelhetnek.',
+            'name.required' => $isBilling
+                ? __('commerce-users::account.address_form.billing_name_required')
+                : __('commerce-users::account.address_form.recipient_name_required'),
+            'zip.required' => __('commerce-users::account.address_form.zip_required'),
+            'city.required' => __('commerce-users::account.address_form.city_required'),
+            'address.required' => __('commerce-users::account.address_form.address_required'),
+            'phone.regex' => __('commerce-users::common.validation.phone_format'),
         ]);
 
         return array_map(fn ($v) => is_string($v) ? trim($v) : $v, $data);

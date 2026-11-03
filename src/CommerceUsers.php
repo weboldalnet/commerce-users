@@ -101,7 +101,8 @@ class CommerceUsers
      * Menüpont a fiókoldal navigációjába.
      *
      * @param  string         $key      egyedi kulcs (ugyanazzal felülírható)
-     * @param  string         $label    felirat
+     * @param  string         $label    felirat — fordítási kulcs is lehet (pl. 'webshop::account.orders'),
+     *                                  megjelenítéskor fordul, így a kérés nyelvén jelenik meg
      * @param  string         $icon     Font Awesome osztály, pl. 'fa-box'
      * @param  string         $route    route-név
      * @param  int            $order    sorrend (a beépítettek: profil 10, címek 30, jelszó 40)
@@ -117,11 +118,11 @@ class CommerceUsers
     public static function accountMenu(): array
     {
         $items = array_merge([
-            'profile' => ['key' => 'profile', 'label' => 'Profilom', 'icon' => 'fa-user', 'route' => 'commerce-users.account',
+            'profile' => ['key' => 'profile', 'label' => 'commerce-users::account.menu.profile', 'icon' => 'fa-user', 'route' => 'commerce-users.account',
                 'order' => 10, 'visible' => null, 'activeRoutes' => ['commerce-users.account']],
-            'addresses' => ['key' => 'addresses', 'label' => 'Címeim', 'icon' => 'fa-location-dot', 'route' => 'commerce-users.addresses.index',
+            'addresses' => ['key' => 'addresses', 'label' => 'commerce-users::account.menu.addresses', 'icon' => 'fa-location-dot', 'route' => 'commerce-users.addresses.index',
                 'order' => 30, 'visible' => fn () => static::feature('addresses'), 'activeRoutes' => ['commerce-users.addresses.*']],
-            'password' => ['key' => 'password', 'label' => 'Jelszócsere', 'icon' => 'fa-key', 'route' => 'commerce-users.password.edit',
+            'password' => ['key' => 'password', 'label' => 'commerce-users::account.menu.password', 'icon' => 'fa-key', 'route' => 'commerce-users.password.edit',
                 'order' => 40, 'visible' => null, 'activeRoutes' => ['commerce-users.password.edit']],
         ], static::$menuItems);
 
@@ -131,6 +132,13 @@ class CommerceUsers
 
         uasort($items, fn ($a, $b) => $a['order'] <=> $b['order']);
 
-        return array_values($items);
+        // a felirat itt, a kérés nyelvén fordul (a befogadó a boot-ban, még nyelvváltás előtt regisztrál);
+        // sima szöveg változatlanul marad
+        return array_values(array_map(function ($item) {
+            $label = __($item['label']);
+            $item['label'] = is_string($label) ? $label : $item['label'];
+
+            return $item;
+        }, $items));
     }
 }

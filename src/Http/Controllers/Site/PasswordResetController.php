@@ -21,8 +21,8 @@ class PasswordResetController extends Controller
     public function sendLink(Request $request)
     {
         $data = $request->validate(['email' => 'required|email|max:255'], [
-            'email.required' => 'Add meg az e-mail-címed.',
-            'email.email' => 'Ez nem érvényes e-mail-cím.',
+            'email.required' => __('commerce-users::common.validation.email_required'),
+            'email.email' => __('commerce-users::common.validation.email_invalid'),
         ]);
 
         $email = mb_strtolower(trim($data['email']));
@@ -33,11 +33,11 @@ class PasswordResetController extends Controller
             $status = Password::broker(CommerceUsers::BROKER)->sendResetLink(['email' => $email]);
 
             if ($status === Password::RESET_THROTTLED) {
-                return back()->withInput()->withErrors(['email' => 'Nemrég küldtünk már levelet erre a címre. Kérlek, várj egy percet.']);
+                return back()->withInput()->withErrors(['email' => __('commerce-users::auth.forgot.throttled')]);
             }
         }
 
-        return back()->with('success', 'Ha ezzel a címmel van fiók, elküldtük a jelszó-visszaállító levelet. Nézd meg a beérkező leveleid (és a levélszemét mappát is).');
+        return back()->with('success', __('commerce-users::auth.forgot.sent'));
     }
 
     public function showReset(Request $request, string $token)
@@ -58,9 +58,9 @@ class PasswordResetController extends Controller
             'email' => 'required|email|max:255',
             'password' => 'required|string|confirmed|min:' . RegisterController::minPasswordLength() . '|max:255',
         ], [
-            'password.required' => 'Adj meg egy új jelszót.',
-            'password.confirmed' => 'A két jelszó nem egyezik.',
-            'password.min' => 'A jelszó legalább :min karakter legyen.',
+            'password.required' => __('commerce-users::common.validation.new_password_required'),
+            'password.confirmed' => __('commerce-users::common.validation.password_confirmed'),
+            'password.min' => __('commerce-users::common.validation.password_min'),
         ]);
 
         $status = Password::broker(CommerceUsers::BROKER)->reset(
@@ -76,10 +76,10 @@ class PasswordResetController extends Controller
 
         if ($status !== Password::PASSWORD_RESET) {
             return back()->withInput($request->only('email'))
-                ->withErrors(['email' => 'A jelszó-visszaállító link érvénytelen vagy lejárt. Kérj újat az „Elfelejtett jelszó” oldalon.']);
+                ->withErrors(['email' => __('commerce-users::auth.reset.invalid')]);
         }
 
         return redirect()->route('commerce-users.login')->with('verified_email', $request->input('email'))
-            ->with('success', 'Az új jelszavad beállítottuk. Most már bejelentkezhetsz vele.');
+            ->with('success', __('commerce-users::auth.reset.success'));
     }
 }

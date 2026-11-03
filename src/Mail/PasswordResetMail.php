@@ -15,10 +15,11 @@ class PasswordResetMail extends Mailable
     {
     }
 
+    /** Küldéskor / rendereléskor fut, így a tárgy az akkor érvényes nyelven készül. */
     public function build()
     {
         return $this->from(self::fromAddress(), self::fromName())
-            ->subject('Új jelszó beállítása – ' . config('app.shop_name'))
+            ->subject(__('commerce-users::mail.password_reset.subject', ['shop' => config('app.shop_name')]))
             ->view('commerce-users::mail.password-reset', [
                 'user' => $this->user,
                 'resetUrl' => route('commerce-users.password.reset', ['token' => $this->token, 'email' => $this->user->email]),

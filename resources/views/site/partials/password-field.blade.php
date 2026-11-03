@@ -5,7 +5,7 @@
         <input type="password" name="{{ $name }}" id="{{ $id }}"
                class="form-control @error($name) is-invalid @enderror"
                autocomplete="{{ $autocomplete ?? 'current-password' }}" @if($required ?? true) required @endif>
-        <button type="button" class="cu-password-toggle js-cu-password-toggle" aria-label="Jelszó megjelenítése" aria-controls="{{ $id }}">
+        <button type="button" class="cu-password-toggle js-cu-password-toggle" aria-label="{{ __('commerce-users::common.password.show') }}" aria-controls="{{ $id }}">
             <i class="fa-regular fa-eye"></i>
         </button>
     </div>

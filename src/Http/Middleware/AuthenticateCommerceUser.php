@@ -28,11 +28,11 @@ class AuthenticateCommerceUser
 
         if (!$user) {
             if ($request->expectsJson()) {
-                return response()->json(['message' => 'Bejelentkezés szükséges.'], 401);
+                return response()->json(['message' => __('commerce-users::auth.login.required_json')], 401);
             }
 
             return redirect()->guest(route('commerce-users.login'))
-                ->with('info', 'Ehhez az oldalhoz jelentkezz be a fiókodba.');
+                ->with('info', __('commerce-users::auth.login.required'));
         }
 
         return $next($request);

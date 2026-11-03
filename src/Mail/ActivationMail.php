@@ -16,10 +16,11 @@ class ActivationMail extends Mailable
     {
     }
 
+    /** Küldéskor / rendereléskor fut, így a tárgy az akkor érvényes nyelven készül. */
     public function build()
     {
         return $this->from(self::fromAddress(), self::fromName())
-            ->subject('Fiókod aktiválása – ' . config('app.shop_name'))
+            ->subject(__('commerce-users::mail.activation.subject', ['shop' => config('app.shop_name')]))
             ->view('commerce-users::mail.activation', [
                 'user' => $this->user,
                 'activationUrl' => $this->activationUrl,

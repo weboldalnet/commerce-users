@@ -38,6 +38,12 @@ class PackageHelper
      */
     const VIEWS_SOURCE = __DIR__.'/../../resources/views';
 
+    /**
+     * A nyelvi fájlok sincsenek az `-all` tagben (a kirakott szöveg elfedné a csomag javításait).
+     * Egyedi szöveghez: `vendor:publish --tag=commerce-users-lang`, és csak a módosított kulcsok maradjanak.
+     */
+    const LANG_SOURCE = __DIR__.'/../../resources/lang';
+
     const PACKAGE_VIEW_EXTENDS = [
         'sidebar' => [
             'view_path' => '/resources/views/admin/package-container/admin-p-sidebar.blade.php',

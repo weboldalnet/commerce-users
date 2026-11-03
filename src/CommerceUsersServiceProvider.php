@@ -31,6 +31,10 @@ class CommerceUsersServiceProvider extends ServiceProvider
         $this->loadViewsFrom(__DIR__.'/../resources/views', PackageHelper::PACKAGE_PREFIX);
         $this->loadViewsFrom(__DIR__.'/../settings/views', PackageHelper::PACKAGE_PREFIX);
 
+        // vásárlói felületi szövegek és levelek: __('commerce-users::auth.…'); a projekt
+        // lang/vendor/commerce-users/{locale}/*.php fájlja kulcsonként felülírja őket
+        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', PackageHelper::PACKAGE_PREFIX);
+
         // A modul saját tábláit a csomag hozza; publish nem kell hozzájuk.
         $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
 
@@ -55,6 +59,10 @@ class CommerceUsersServiceProvider extends ServiceProvider
         $this->publishes([
             PackageHelper::VIEWS_SOURCE => resource_path('views/vendor/' . PackageHelper::PACKAGE_PREFIX),
         ], PackageHelper::PACKAGE_PREFIX . '-views');
+
+        $this->publishes([
+            PackageHelper::LANG_SOURCE => $this->app->langPath('vendor/' . PackageHelper::PACKAGE_PREFIX),
+        ], PackageHelper::PACKAGE_PREFIX . '-lang');
     }
 
     public function register()

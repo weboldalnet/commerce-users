@@ -15,16 +15,16 @@
     <div class="cu-page cu-account-page">
         <div class="container">
             <div class="cu-account-head">
-                <span class="cu-kicker">Fiókom</span>
+                <span class="cu-kicker">{{ __('commerce-users::common.my_account') }}</span>
                 <h1>@yield('cu_title')</h1>
             </div>
 
             <div class="row">
                 <aside class="col-lg-3 mb-4">
-                    <nav class="cu-nav" aria-label="Fiókmenü">
+                    <nav class="cu-nav" aria-label="{{ __('commerce-users::account.menu.label') }}">
                         @if($commerceUser)
                             <div class="cu-nav-hello">
-                                Bejelentkezve:
+                                {{ __('commerce-users::account.menu.signed_in_as') }}
                                 <strong>{{ $commerceUser->full_name }}</strong>
                             </div>
                         @endif
@@ -36,7 +36,7 @@
                         @endforeach
                         <form method="POST" action="{{ route('commerce-users.logout') }}">
                             @csrf
-                            <button type="submit"><i class="fa-solid fa-right-from-bracket"></i> Kijelentkezés</button>
+                            <button type="submit"><i class="fa-solid fa-right-from-bracket"></i> {{ __('commerce-users::common.logout') }}</button>
                         </form>
                     </nav>
                 </aside>

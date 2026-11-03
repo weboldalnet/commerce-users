@@ -1,3 +1,13 @@
+## [Unreleased]
+### Többnyelvű vásárlói fiókok: a felület szövegei nyelvi fájlokban
+Migrációt NEM igényel. Magyarul a felület betűre változatlan.
+- `resources/lang/{hu,en}/` (`__('commerce-users::…')`, 165 kulcs): bejelentkezés, regisztráció, aktiválás, jelszó, profil,
+  címek, fiókmenü, aktiváló és jelszó-visszaállító levél (tárgy is). Felülírás a projektben:
+  `lang/vendor/commerce-users/{nyelv}/…` (publish: `commerce-users-lang`). Az angol adatkezelési szövegek jelölve.
+- A fiókmenü feliratai megjelenítéskor, a kérés nyelvén fordulnak: a befogadó (pl. a webshop „Rendeléseim” pontja)
+  nyelvi kulcsot is átadhat az `addAccountMenuItem()`-nek.
+- A foglalt e-mail-cím felismerése a regisztrációs nézetben a nyelvi kulcs szövegével (eddig magyar részszövegből).
+
 ## [1.1.0] - 2026-11-02
 ### Vásárlói fiókok: regisztráció, bejelentkezés, profil, címek, admin vásárlólista
 1 új migráció (`commerce_users`, `commerce_user_addresses`, `commerce_user_password_resets`) —

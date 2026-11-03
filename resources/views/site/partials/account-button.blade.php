@@ -9,13 +9,13 @@
     @if($cuUser)
         <div class="dropdown cu-account-btn">
             <button type="button" class="{{ $cuBtnClass }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                    title="Fiókom" aria-label="Fiókom">
+                    title="{{ __('commerce-users::common.my_account') }}" aria-label="{{ __('commerce-users::common.my_account') }}">
                 <i class="fa-solid fa-user fa-fw"></i>
             </button>
             {{-- Segédosztályokkal, mert a modul stíluslapja csak a fiókoldalakon töltődik be:
                  a Kijelentkezés a doboz aljáig ér, fölötte-alatta nincs üres sáv; oldalt 16 px (a Bootstrap 24 px-e helyett) --}}
             <div class="dropdown-menu dropdown-menu-right cu-account-menu pt-1 pb-0 overflow-hidden">
-                <h6 class="dropdown-header px-3">Szia, {{ $cuUser->first_name }}!</h6>
+                <h6 class="dropdown-header px-3">{{ __('commerce-users::account.menu.hello', ['name' => $cuUser->first_name]) }}</h6>
                 @foreach(\Weboldalnet\CommerceUsers\CommerceUsers::accountMenu() as $cuItem)
                     <a class="dropdown-item px-3" href="{{ route($cuItem['route']) }}"><i class="fa-solid {{ $cuItem['icon'] }} fa-fw mr-1"></i> {{ $cuItem['label'] }}</a>
                 @endforeach
@@ -25,12 +25,12 @@
                 <form method="POST" action="{{ route('commerce-users.logout') }}" class="m-0">
                     @csrf
                     <a href="{{ route('commerce-users.logout') }}" class="dropdown-item px-3" role="button"
-                       onclick="event.preventDefault(); this.closest('form').submit();"><i class="fa-solid fa-right-from-bracket fa-fw mr-1"></i> Kijelentkezés</a>
+                       onclick="event.preventDefault(); this.closest('form').submit();"><i class="fa-solid fa-right-from-bracket fa-fw mr-1"></i> {{ __('commerce-users::common.logout') }}</a>
                 </form>
             </div>
         </div>
     @else
-        <a href="{{ route('commerce-users.login') }}" class="{{ $cuBtnClass }} cu-account-btn" title="Bejelentkezés" aria-label="Bejelentkezés">
+        <a href="{{ route('commerce-users.login') }}" class="{{ $cuBtnClass }} cu-account-btn" title="{{ __('commerce-users::common.login') }}" aria-label="{{ __('commerce-users::common.login') }}">
             <i class="fa-solid fa-key fa-fw"></i>
         </a>
     @endif

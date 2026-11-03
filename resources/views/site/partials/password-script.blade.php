@@ -11,7 +11,7 @@
         }
         var show = input.type === 'password';
         input.type = show ? 'text' : 'password';
-        btn.setAttribute('aria-label', show ? 'Jelszó elrejtése' : 'Jelszó megjelenítése');
+        btn.setAttribute('aria-label', show ? @json(__('commerce-users::common.password.hide')) : @json(__('commerce-users::common.password.show')));
         btn.querySelector('i').className = show ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
     });
 </script>

@@ -31,7 +31,7 @@ class RegisterController extends Controller
 
         $key = 'commerce-users-register|' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 10)) {
-            throw ValidationException::withMessages(['email' => 'Túl sok regisztráció erről a hálózatról. Próbáld újra később.']);
+            throw ValidationException::withMessages(['email' => __('commerce-users::auth.register.throttled')]);
         }
 
         $request->merge(['email' => mb_strtolower(trim((string) $request->input('email')))]);
@@ -43,15 +43,16 @@ class RegisterController extends Controller
             'password' => 'required|string|confirmed|min:' . self::minPasswordLength() . '|max:255',
             'accept_privacy' => 'accepted',
         ], [
-            'last_name.required' => 'Add meg a vezetékneved.',
-            'first_name.required' => 'Add meg a keresztneved.',
-            'email.required' => 'Add meg az e-mail-címed.',
-            'email.email' => 'Ez nem érvényes e-mail-cím.',
-            'email.unique' => 'Ezzel az e-mail-címmel már van fiók. Jelentkezz be, vagy kérj új jelszót.',
-            'password.required' => 'Adj meg egy jelszót.',
-            'password.confirmed' => 'A két jelszó nem egyezik.',
-            'password.min' => 'A jelszó legalább :min karakter legyen.',
-            'accept_privacy' => 'A regisztrációhoz el kell fogadnod az adatkezelési tájékoztatót.',
+            'last_name.required' => __('commerce-users::common.validation.last_name_required'),
+            'first_name.required' => __('commerce-users::common.validation.first_name_required'),
+            'email.required' => __('commerce-users::common.validation.email_required'),
+            'email.email' => __('commerce-users::common.validation.email_invalid'),
+            // a register nézet ezzel az üzenettel ismeri fel a foglalt címet (belépés / új jelszó linkek)
+            'email.unique' => __('commerce-users::auth.register.email_unique'),
+            'password.required' => __('commerce-users::common.validation.password_required'),
+            'password.confirmed' => __('commerce-users::common.validation.password_confirmed'),
+            'password.min' => __('commerce-users::common.validation.password_min'),
+            'accept_privacy' => __('commerce-users::auth.register.accept_privacy_required'),
         ]);
 
         RateLimiter::hit($key, 3600);
@@ -91,21 +92,21 @@ class RegisterController extends Controller
 
         if ($user->isVerified()) {
             return redirect()->route('commerce-users.login')->with('verified_email', $user->email)
-                ->with('info', 'A fiókod már aktív, bejelentkezhetsz.');
+                ->with('info', __('commerce-users::auth.activation.already_active'));
         }
 
         ActivationService::activate($user);
 
         return redirect()->route('commerce-users.login')->with('verified_email', $user->email)
-            ->with('success', 'Sikeres aktiválás! Most már bejelentkezhetsz.');
+            ->with('success', __('commerce-users::auth.activation.success'));
     }
 
     /** Aktiváló levél újraküldése. A válasz mindig ugyanaz: nem árulja el, van-e ilyen fiók. */
     public function resend(Request $request)
     {
         $data = $request->validate(['email' => 'required|email|max:255'], [
-            'email.required' => 'Add meg az e-mail-címed.',
-            'email.email' => 'Ez nem érvényes e-mail-cím.',
+            'email.required' => __('commerce-users::common.validation.email_required'),
+            'email.email' => __('commerce-users::common.validation.email_invalid'),
         ]);
 
         $email = mb_strtolower(trim($data['email']));
@@ -120,7 +121,7 @@ class RegisterController extends Controller
             }
         }
 
-        return back()->with('success', 'Ha ezzel a címmel van aktiválásra váró fiók, újra elküldtük az aktiváló levelet.');
+        return back()->with('success', __('commerce-users::auth.activation.resent'));
     }
 
     public static function minPasswordLength(): int

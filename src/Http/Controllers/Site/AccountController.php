@@ -31,9 +31,9 @@ class AccountController extends Controller
             'first_name' => 'required|string|max:100',
             'phone' => ['nullable', 'string', 'max:30', 'regex:/^[0-9+()\/\-\s]*$/'],
         ], [
-            'last_name.required' => 'Add meg a vezetékneved.',
-            'first_name.required' => 'Add meg a keresztneved.',
-            'phone.regex' => 'A telefonszámban csak számok, szóköz és a + ( ) / - jelek szerepelhetnek.',
+            'last_name.required' => __('commerce-users::common.validation.last_name_required'),
+            'first_name.required' => __('commerce-users::common.validation.first_name_required'),
+            'phone.regex' => __('commerce-users::common.validation.phone_format'),
         ]);
 
         CommerceUsers::user()->fill([
@@ -42,7 +42,7 @@ class AccountController extends Controller
             'phone' => $data['phone'] ? trim($data['phone']) : null,
         ])->save();
 
-        return redirect()->route('commerce-users.account')->with('success', 'Az adataidat elmentettük.');
+        return redirect()->route('commerce-users.account')->with('success', __('commerce-users::account.profile.saved'));
     }
 
     public function editPassword()
@@ -61,21 +61,21 @@ class AccountController extends Controller
             'current_password' => 'required|string',
             'password' => 'required|string|confirmed|min:' . RegisterController::minPasswordLength() . '|max:255|different:current_password',
         ], [
-            'current_password.required' => 'Add meg a jelenlegi jelszavad.',
-            'password.required' => 'Adj meg egy új jelszót.',
-            'password.confirmed' => 'A két új jelszó nem egyezik.',
-            'password.min' => 'Az új jelszó legalább :min karakter legyen.',
-            'password.different' => 'Az új jelszó nem egyezhet a jelenlegivel.',
+            'current_password.required' => __('commerce-users::account.password.current_required'),
+            'password.required' => __('commerce-users::common.validation.new_password_required'),
+            'password.confirmed' => __('commerce-users::account.password.confirmed'),
+            'password.min' => __('commerce-users::account.password.min'),
+            'password.different' => __('commerce-users::account.password.different'),
         ]);
 
         if (!Hash::check($request->input('current_password'), $user->password)) {
-            return back()->withErrors(['current_password' => 'A jelenlegi jelszó nem megfelelő.']);
+            return back()->withErrors(['current_password' => __('commerce-users::account.password.current_wrong')]);
         }
 
         $user->password = $request->input('password');
         $user->save();
         $request->session()->regenerate();
 
-        return redirect()->route('commerce-users.password.edit')->with('success', 'Az új jelszavad elmentettük.');
+        return redirect()->route('commerce-users.password.edit')->with('success', __('commerce-users::account.password.saved'));
     }
 }
