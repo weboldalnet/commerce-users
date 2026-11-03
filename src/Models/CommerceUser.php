@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Weboldalnet\CommerceUsers\Mail\PasswordResetMail;
+use Weboldalnet\CommerceCore\Models\Concerns\UsesCommerceConnection;
 
 /**
  * Vásárlói fiók.
@@ -21,6 +22,8 @@ use Weboldalnet\CommerceUsers\Mail\PasswordResetMail;
  */
 class CommerceUser extends Authenticatable
 {
+    use UsesCommerceConnection;
+
     protected $table = 'public.commerce_users';
 
     protected $fillable = ['last_name', 'first_name', 'email', 'phone', 'password', 'is_active'];

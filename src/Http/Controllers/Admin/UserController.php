@@ -4,13 +4,13 @@ namespace Weboldalnet\CommerceUsers\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Weboldalnet\CommerceUsers\CommerceUsers;
 use Weboldalnet\CommerceUsers\Models\CommerceUser;
 use Weboldalnet\CommerceUsers\Services\ActivationService;
+use Weboldalnet\CommerceCore\Support\CommerceConnection;
 
 /** Vásárlói fiókok az adminban: lista, adatlap, e-mail-cím módosítása, aktiválás, letiltás, törlés. */
 class UserController extends Controller
@@ -68,7 +68,7 @@ class UserController extends Controller
 
         $oldEmail = $user->email;
 
-        DB::transaction(function () use ($user, $data) {
+        CommerceConnection::db()->transaction(function () use ($user, $data) {
             // a régi címre kért jelszó-visszaállító linkek (a repository a jelenlegi címmel töröl)
             Password::broker(CommerceUsers::BROKER)->getRepository()->delete($user);
 

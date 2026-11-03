@@ -3,6 +3,7 @@
 namespace Weboldalnet\CommerceUsers\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Weboldalnet\CommerceCore\Models\Concerns\UsesCommerceConnection;
 
 /**
  * Vásárló mentett szállítási vagy számlázási címe. Típusonként legfeljebb egy elsődleges.
@@ -23,6 +24,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CommerceUserAddress extends Model
 {
+    use UsesCommerceConnection;
+
     protected $table = 'public.commerce_user_addresses';
 
     public const TYPE_SHIPPING = 'shipping';

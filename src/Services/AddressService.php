@@ -2,9 +2,9 @@
 
 namespace Weboldalnet\CommerceUsers\Services;
 
-use Illuminate\Support\Facades\DB;
 use Weboldalnet\CommerceUsers\Models\CommerceUser;
 use Weboldalnet\CommerceUsers\Models\CommerceUserAddress;
+use Weboldalnet\CommerceCore\Support\CommerceConnection;
 
 /**
  * Címek mentése úgy, hogy típusonként (szállítási / számlázási) mindig PONTOSAN egy
@@ -17,7 +17,7 @@ class AddressService
 
     public static function save(CommerceUser $user, string $type, array $data, ?CommerceUserAddress $address = null): CommerceUserAddress
     {
-        return DB::transaction(function () use ($user, $type, $data, $address) {
+        return CommerceConnection::db()->transaction(function () use ($user, $type, $data, $address) {
             $address = $address ?: new CommerceUserAddress(['type' => $type]);
             $address->fill(array_intersect_key($data, array_flip(self::FIELDS)));
             $address->country = $address->country ?: 'HU';
@@ -42,7 +42,7 @@ class AddressService
 
     public static function makeDefault(CommerceUserAddress $address): void
     {
-        DB::transaction(function () use ($address) {
+        CommerceConnection::db()->transaction(function () use ($address) {
             $address->is_default = true;
             $address->save();
             self::clearOtherDefaults($address);
@@ -51,7 +51,7 @@ class AddressService
 
     public static function delete(CommerceUserAddress $address): void
     {
-        DB::transaction(function () use ($address) {
+        CommerceConnection::db()->transaction(function () use ($address) {
             $wasDefault = $address->is_default;
             $userId = $address->commerce_user_id;
             $type = $address->type;

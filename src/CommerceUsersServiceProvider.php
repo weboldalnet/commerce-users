@@ -96,6 +96,8 @@ class CommerceUsersServiceProvider extends ServiceProvider
             $config->set('auth.passwords.' . CommerceUsers::BROKER, [
                 'provider' => CommerceUsers::PROVIDER,
                 'table' => 'public.commerce_user_password_resets',
+                // a tokentábla is a közös (alapnyelvi) adatbázisban: a fiók nyelvtől független
+                'connection' => \Weboldalnet\CommerceCore\Support\CommerceConnection::name(),
                 'expire' => (int) $config->get('commerce-users.password_reset_expire_minutes', 60) ?: 60,
                 'throttle' => 60,
             ]);
