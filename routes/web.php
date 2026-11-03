@@ -73,6 +73,7 @@ Route::domain(getAdminDomain())
     ->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::get('/{user}', [UserController::class, 'show'])->whereNumber('user')->name('show');
+        Route::put('/{user}/email', [UserController::class, 'updateEmail'])->whereNumber('user')->name('email');
         Route::post('/{user}/toggle-active', [UserController::class, 'toggleActive'])->whereNumber('user')->name('toggle-active');
         Route::post('/{user}/verify', [UserController::class, 'verify'])->whereNumber('user')->name('verify');
         Route::post('/{user}/resend-activation', [UserController::class, 'resendActivation'])->whereNumber('user')->name('resend-activation');

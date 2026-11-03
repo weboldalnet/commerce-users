@@ -6,16 +6,20 @@ frissítés után `php artisan migrate` és `vendor:publish --tag=commerce-users
 - Regisztráció (vezetéknév, keresztnév, e-mail, jelszó + megerősítés, adatkezelési hozzájárulás),
   aktiválás aláírt, 48 óráig érvényes e-mailes linkkel; aktiváló levél újraküldése.
 - Bejelentkezés (próbálkozás-korláttal, „Maradjak bejelentkezve”), kijelentkezés, elfelejtett jelszó.
-- Profil (név, telefonszám; az e-mail-cím nem módosítható), jelszócsere.
+- Profil (név, telefonszám; az e-mail-címet csak az admin módosíthatja), jelszócsere.
 - Szállítási és számlázási címek: több is lehet belőlük, típusonként egy elsődleges.
 - Saját guard (`commerce_user`), a `web` és az `admin` guardtól független; futásidőben regisztrálva.
 - Befogadói bekötés: `CommerceUsers::resolveFeaturesUsing()`, `resolveLinksUsing()`,
   `addAccountMenuItem()`, a fiókoldal elrendezése (`commerce-users::site.layouts.account`) és a
   `commerce-users.auth` / `commerce-users.enabled` middleware.
-- Fejléc fiók-gombja (`commerce-users::site.partials.account-button`): vendégnek belépés, bejelentkezve
-  lenyíló a fiókmenüvel.
+- Fejléc fiók-gombja (`commerce-users::site.partials.account-button`): vendégnek kulcs ikon, a belépő
+  oldalra visz; bejelentkezve felhasználó ikon, lenyíló a fiókmenüvel (a Kijelentkezés link, így a
+  befogadó gomb-szabályai nem színezik ki).
 - Admin: `/webshop/users` — lista keresővel és állapotszűrővel, adatlap a címekkel, kézi aktiválás,
   aktiváló levél újraküldése, letiltás / engedélyezés, törlés.
+- Admin: **e-mail-cím módosítása** az adatlapon (`PUT /webshop/users/{id}/email`). Az új címet is igazolni
+  kell: a fiók aktiválatlan lesz, és az új címre aktiváló levél megy (a régi címre küldött link
+  érvénytelen, a jelszó-visszaállító linkek törlődnek, a „Maradjak bejelentkezve” lejár).
 - Levelek a core levélsablonjában, a bolt színével és feladójával.
 
 ## [1.0.0] - 2026-09-04

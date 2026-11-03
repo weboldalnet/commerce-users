@@ -13,11 +13,11 @@ kapcsolók) a befogadó adja — a `weboldalnet/webshop-ai-default` 1.1.17-től 
 | Aktiválás | `/fiok/aktivalas/{id}/{hash}` | aláírt, 48 óráig érvényes link; aktiválás nélkül nem lehet belépni; újraküldés (`/fiok/aktivalo-level`) |
 | Bejelentkezés | `/fiok/belepes` | „Maradjak bejelentkezve”, 5 sikertelen próba / perc / e-mail + IP; visszatér az eredeti oldalra (pl. pénztár) |
 | Elfelejtett jelszó | `/fiok/elfelejtett-jelszo` | 60 percig érvényes, egyszer használható link; a válasz nem árulja el, van-e fiók |
-| Profil | `/fiok` | név és telefonszám módosítása; az e-mail-cím NEM módosítható (belépési azonosító) |
+| Profil | `/fiok` | név és telefonszám módosítása; az e-mail-címet (belépési azonosító) a vásárló nem, csak az admin módosíthatja |
 | Jelszócsere | `/fiok/jelszo` | a jelenlegi jelszóval |
 | Címek | `/fiok/cimek` | több szállítási és számlázási cím, típusonként egy elsődleges (az első magától az) |
 | Kijelentkezés | `POST /fiok/kilepes` | a munkamenet teljesen törlődik |
-| Admin | `/webshop/users` | lista (keresés, állapotszűrő), adatlap, kézi aktiválás, aktiváló levél újraküldése, letiltás, törlés |
+| Admin | `/webshop/users` | lista (keresés, állapotszűrő), adatlap, e-mail-cím módosítása (új aktiváló levéllel), kézi aktiválás, aktiváló levél újraküldése, letiltás, törlés |
 
 A levelek (aktiválás, új jelszó) a core levélsablonját (`mail.layouts.mail_layout`) és a bolt arculati
 színét (`ContentHelper::THEME['theme_color']`) használják, feladójuk `app.shop_email` / `app.shop_name`.

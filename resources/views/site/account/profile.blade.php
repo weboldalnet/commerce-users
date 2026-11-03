@@ -25,7 +25,7 @@
                 <div class="form-group col-sm-6">
                     <label for="cu_email">E-mail-cím</label>
                     <input type="email" id="cu_email" value="{{ $user->email }}" class="form-control" readonly aria-describedby="cu_email_hint">
-                    <span class="cu-hint" id="cu_email_hint">Az e-mail-cím a belépési azonosítód, ezért nem módosítható.</span>
+                    <span class="cu-hint" id="cu_email_hint">Az e-mail-cím a belépési azonosítód; ha módosítani szeretnéd, írj nekünk.</span>
                 </div>
                 <div class="form-group col-sm-6">
                     <label for="cu_phone">Telefonszám</label>

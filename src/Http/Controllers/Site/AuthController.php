@@ -62,7 +62,7 @@ class AuthController extends Controller
         if (!$user->isVerified()) {
             return back()->withInput($request->only('email'))
                 ->with('unverified_email', $user->email)
-                ->withErrors(['email' => 'A fiókod még nincs aktiválva. Kattints a regisztrációkor küldött levélben lévő linkre.']);
+                ->withErrors(['email' => 'A fiókod még nincs aktiválva. Kattints az aktiváló levélben lévő linkre.']);
         }
 
         RateLimiter::clear($key);

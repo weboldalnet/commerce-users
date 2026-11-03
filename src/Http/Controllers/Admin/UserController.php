@@ -4,10 +4,15 @@ namespace Weboldalnet\CommerceUsers\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Weboldalnet\CommerceUsers\CommerceUsers;
 use Weboldalnet\CommerceUsers\Models\CommerceUser;
 use Weboldalnet\CommerceUsers\Services\ActivationService;
 
-/** Vásárlói fiókok az adminban: lista, adatlap, aktiválás, letiltás, törlés. */
+/** Vásárlói fiókok az adminban: lista, adatlap, e-mail-cím módosítása, aktiválás, letiltás, törlés. */
 class UserController extends Controller
 {
     public function index(Request $request)
@@ -35,6 +40,48 @@ class UserController extends Controller
             'shippingAddresses' => $user->shippingAddresses()->get(),
             'billingAddresses' => $user->billingAddresses()->get(),
         ]);
+    }
+
+    /**
+     * Az e-mail-cím (a belépési azonosító) módosítása — a vásárló maga nem módosíthatja.
+     *
+     * Az új címet is igazolni kell: a fiók aktiválatlan lesz, és az új címre aktiváló levél megy;
+     * addig a vásárló nem tud belépni (a bejelentkezett munkamenetét is kilépteti az auth
+     * middleware). A régi címre kiküldött aktiváló link magától érvénytelen (a cím hash-ét
+     * tartalmazza), a jelszó-visszaállító linkek törlődnek, az emlékező token megújul.
+     */
+    public function updateEmail(Request $request, CommerceUser $user)
+    {
+        $request->merge(['email' => mb_strtolower(trim((string) $request->input('email')))]);
+        $data = $request->validate([
+            'email' => ['required', 'email', 'max:255', Rule::unique(CommerceUser::class, 'email')->ignore($user->id)],
+        ], [
+            'email.required' => 'Add meg az új e-mail-címet.',
+            'email.email' => 'Ez nem érvényes e-mail-cím.',
+            'email.max' => 'Az e-mail-cím legfeljebb 255 karakter lehet.',
+            'email.unique' => 'Ezzel az e-mail-címmel már van fiók.',
+        ]);
+
+        if ($data['email'] === $user->email) {
+            return back()->with('info', 'Az e-mail-cím nem változott.');
+        }
+
+        $oldEmail = $user->email;
+
+        DB::transaction(function () use ($user, $data) {
+            // a régi címre kért jelszó-visszaállító linkek (a repository a jelenlegi címmel töröl)
+            Password::broker(CommerceUsers::BROKER)->getRepository()->delete($user);
+
+            $user->forceFill([
+                'email' => $data['email'],
+                'email_verified_at' => null,
+                'remember_token' => Str::random(60),
+            ])->save();
+        });
+
+        return ActivationService::send($user)
+            ? back()->with('success', 'Az e-mail-cím módosult (' . $oldEmail . ' → ' . $user->email . '). Az új címre aktiváló levelet küldtünk; a vásárló a link megnyitásáig nem tud belépni.')
+            : back()->with('error', 'Az e-mail-cím módosult (' . $user->email . '), de az aktiváló levél küldése nem sikerült — a részletek a naplóban. Újraküldés a Műveletek között.');
     }
 
     public function toggleActive(CommerceUser $user)

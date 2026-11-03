@@ -65,6 +65,27 @@
             </div>
 
             <div class="col-lg-5">
+                {{-- A belépési azonosítót csak az admin módosíthatja; az új címet a vásárlónak igazolnia kell --}}
+                <div class="content-box bordered mb-3">
+                    <h4 class="fw-700 mb-3">E-mail-cím módosítása</h4>
+                    <form method="POST" action="{{ route('admin.webshop.users.email', $customer) }}"
+                          onsubmit="return confirm('Biztosan módosítod az e-mail-címet? A fiók aktiválatlan lesz, és az új címre aktiváló levél megy.');">
+                        @csrf @method('PUT')
+                        <div class="form-group mb-0">
+                            <label for="cu_admin_email">Új e-mail-cím</label>
+                            <div class="input-group">
+                                <input type="email" name="email" id="cu_admin_email" maxlength="255" autocomplete="off" required
+                                       class="form-control @error('email') is-invalid @enderror" value="{{ old('email', $customer->email) }}">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Mentés</button>
+                                </div>
+                            </div>
+                            @error('email') <div class="invalid-feedback d-block">{{ $message }}</div> @enderror
+                            <span class="d-block text-muted fs-14 mt-1">Mentéskor az új címre aktiváló levél megy, és a vásárló a link megnyitásáig nem tud belépni.</span>
+                        </div>
+                    </form>
+                </div>
+
                 <div class="content-box bordered mb-3">
                     <h4 class="fw-700 mb-3">Műveletek</h4>
 
