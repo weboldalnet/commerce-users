@@ -5,7 +5,7 @@
 @section('cu_lead', __('commerce-users::auth.activation.expired_lead'))
 
 @section('cu_content')
-    <form method="POST" action="{{ route('commerce-users.verification.resend') }}" novalidate>
+    <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.verification.resend') }}" novalidate>
         @csrf
         <div class="form-group">
             <label for="cu_email">{{ __('commerce-users::common.fields.email') }} <span class="cu-req">*</span></label>
@@ -18,5 +18,5 @@
 @endsection
 
 @section('cu_after')
-    <p class="cu-auth-alt"><a href="{{ route('commerce-users.login') }}">{{ __('commerce-users::common.back_to_login') }}</a></p>
+    <p class="cu-auth-alt"><a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.login') }}">{{ __('commerce-users::common.back_to_login') }}</a></p>
 @endsection

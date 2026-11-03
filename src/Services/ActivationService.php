@@ -2,6 +2,7 @@
 
 namespace Weboldalnet\CommerceUsers\Services;
 
+use Weboldalnet\CommerceUsers\CommerceUsers;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
@@ -22,7 +23,7 @@ class ActivationService
 
     public static function url(CommerceUser $user): string
     {
-        return URL::temporarySignedRoute('commerce-users.verify', now()->addHours(self::expireHours()), [
+        return URL::temporarySignedRoute(CommerceUsers::routeName('commerce-users.verify'), now()->addHours(self::expireHours()), [
             'id' => $user->id,
             'hash' => self::hash($user),
         ]);

@@ -71,7 +71,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $user->forceFill(['last_login_at' => now()])->save();
 
-        return redirect()->intended(route('commerce-users.account'))->with('success', __('commerce-users::auth.login.success'));
+        return redirect()->intended(CommerceUsers::route('commerce-users.account'))->with('success', __('commerce-users::auth.login.success'));
     }
 
     public function logout(Request $request)

@@ -13,7 +13,7 @@ class RedirectIfCommerceUser
     public function handle(Request $request, Closure $next)
     {
         if (Auth::guard(CommerceUsers::GUARD)->check()) {
-            return redirect()->route('commerce-users.account');
+            return redirect()->to(CommerceUsers::route('commerce-users.account'));
         }
 
         return $next($request);

@@ -17,20 +17,20 @@
             <div class="dropdown-menu dropdown-menu-right cu-account-menu pt-1 pb-0 overflow-hidden">
                 <h6 class="dropdown-header px-3">{{ __('commerce-users::account.menu.hello', ['name' => $cuUser->first_name]) }}</h6>
                 @foreach(\Weboldalnet\CommerceUsers\CommerceUsers::accountMenu() as $cuItem)
-                    <a class="dropdown-item px-3" href="{{ route($cuItem['route']) }}"><i class="fa-solid {{ $cuItem['icon'] }} fa-fw mr-1"></i> {{ $cuItem['label'] }}</a>
+                    <a class="dropdown-item px-3" href="{{ $cuItem['url'] }}"><i class="fa-solid {{ $cuItem['icon'] }} fa-fw mr-1"></i> {{ $cuItem['label'] }}</a>
                 @endforeach
                 <div class="dropdown-divider mt-1 mb-0"></div>
                 {{-- Link, nem <button>: a befogadó fejlécének gomb-szabályai (pl. a core „.desktop-menu
                      .dropdown.show button”) a nyitott lenyíló minden gombját kiszínezik --}}
-                <form method="POST" action="{{ route('commerce-users.logout') }}" class="m-0">
+                <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.logout') }}" class="m-0">
                     @csrf
-                    <a href="{{ route('commerce-users.logout') }}" class="dropdown-item px-3" role="button"
+                    <a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.logout') }}" class="dropdown-item px-3" role="button"
                        onclick="event.preventDefault(); this.closest('form').submit();"><i class="fa-solid fa-right-from-bracket fa-fw mr-1"></i> {{ __('commerce-users::common.logout') }}</a>
                 </form>
             </div>
         </div>
     @else
-        <a href="{{ route('commerce-users.login') }}" class="{{ $cuBtnClass }} cu-account-btn" title="{{ __('commerce-users::common.login') }}" aria-label="{{ __('commerce-users::common.login') }}">
+        <a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.login') }}" class="{{ $cuBtnClass }} cu-account-btn" title="{{ __('commerce-users::common.login') }}" aria-label="{{ __('commerce-users::common.login') }}">
             <i class="fa-solid fa-key fa-fw"></i>
         </a>
     @endif

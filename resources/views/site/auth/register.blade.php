@@ -5,7 +5,7 @@
 @section('cu_card_class', 'is-wide')
 
 @section('cu_content')
-    <form method="POST" action="{{ route('commerce-users.register.submit') }}" novalidate>
+    <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.register.submit') }}" novalidate>
         @csrf
         <div class="form-row">
             <div class="form-group col-sm-6">
@@ -30,8 +30,8 @@
                 <div class="invalid-feedback">
                     {{ $message }}
                     @if($message === __('commerce-users::auth.register.email_unique'))
-                        <a href="{{ route('commerce-users.login', ['email' => old('email')]) }}">{{ __('commerce-users::common.login') }}</a> ·
-                        <a href="{{ route('commerce-users.password.request') }}">{{ __('commerce-users::auth.register.new_password_link') }}</a>
+                        <a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.login', ['email' => old('email')]) }}">{{ __('commerce-users::common.login') }}</a> ·
+                        <a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.password.request') }}">{{ __('commerce-users::auth.register.new_password_link') }}</a>
                     @endif
                 </div>
             @enderror
@@ -80,5 +80,5 @@
 @endsection
 
 @section('cu_after')
-    <p class="cu-auth-alt">{{ __('commerce-users::auth.register.has_account') }} <a href="{{ route('commerce-users.login') }}">{{ __('commerce-users::auth.register.login_link') }}</a></p>
+    <p class="cu-auth-alt">{{ __('commerce-users::auth.register.has_account') }} <a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.login') }}">{{ __('commerce-users::auth.register.login_link') }}</a></p>
 @endsection

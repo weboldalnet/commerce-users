@@ -5,7 +5,7 @@
 @section('cu_content')
     <div class="cu-card">
         <div class="cu-card-title"><h2>{{ __('commerce-users::account.profile.details') }}</h2></div>
-        <form method="POST" action="{{ route('commerce-users.account.update') }}" novalidate>
+        <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.account.update') }}" novalidate>
             @csrf @method('PUT')
             <div class="form-row">
                 <div class="form-group col-sm-6">
@@ -54,7 +54,7 @@
             @endif
         </dl>
         @if($addressesEnabled)
-            <a href="{{ route('commerce-users.addresses.index') }}" class="btn btn-outline-primary mt-3">{{ __('commerce-users::account.profile.manage_addresses') }}</a>
+            <a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.addresses.index') }}" class="btn btn-outline-primary mt-3">{{ __('commerce-users::account.profile.manage_addresses') }}</a>
         @endif
     </div>
 @endsection

@@ -3,7 +3,7 @@
 @section('cu_title', __('commerce-users::auth.reset.title'))
 
 @section('cu_content')
-    <form method="POST" action="{{ route('commerce-users.password.update') }}" novalidate>
+    <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.password.update') }}" novalidate>
         @csrf
         <input type="hidden" name="token" value="{{ $token }}">
         <div class="form-group">
@@ -27,5 +27,5 @@
 @endsection
 
 @section('cu_after')
-    <p class="cu-auth-alt"><a href="{{ route('commerce-users.login') }}">{{ __('commerce-users::common.back_to_login') }}</a></p>
+    <p class="cu-auth-alt"><a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.login') }}">{{ __('commerce-users::common.back_to_login') }}</a></p>
 @endsection

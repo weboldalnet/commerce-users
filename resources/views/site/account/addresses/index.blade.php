@@ -13,7 +13,7 @@
             <div class="cu-card-title">
                 <h2>{{ $cuGroup['title'] }}</h2>
                 @if($cuGroup['addresses']->count() < $maxPerType)
-                    <a href="{{ route('commerce-users.addresses.create', $cuType) }}" class="btn btn-sm btn-primary">
+                    <a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.addresses.create', $cuType) }}" class="btn btn-sm btn-primary">
                         <i class="fa-solid fa-plus"></i> {{ $cuGroup['new'] }}
                     </a>
                 @endif
@@ -40,14 +40,14 @@
                                 @if($cuAddress->phone)<br><span class="text-muted">{{ __('commerce-users::account.addresses.phone_line', ['phone' => $cuAddress->phone]) }}</span>@endif
                             </div>
                             <div class="cu-address-actions">
-                                <a href="{{ route('commerce-users.addresses.edit', $cuAddress->id) }}" class="btn btn-sm btn-outline-primary">{{ __('commerce-users::account.addresses.edit') }}</a>
+                                <a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.addresses.edit', $cuAddress->id) }}" class="btn btn-sm btn-outline-primary">{{ __('commerce-users::account.addresses.edit') }}</a>
                                 @unless($cuAddress->is_default)
-                                    <form method="POST" action="{{ route('commerce-users.addresses.default', $cuAddress->id) }}">
+                                    <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.addresses.default', $cuAddress->id) }}">
                                         @csrf
                                         <button type="submit" class="btn btn-sm btn-outline-secondary">{{ __('commerce-users::account.addresses.make_default') }}</button>
                                     </form>
                                 @endunless
-                                <form method="POST" action="{{ route('commerce-users.addresses.destroy', $cuAddress->id) }}"
+                                <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.addresses.destroy', $cuAddress->id) }}"
                                       onsubmit="return confirm(@js(__('commerce-users::account.addresses.delete_confirm')));">
                                     @csrf @method('DELETE')
                                     <button type="submit" class="btn btn-sm btn-outline-danger">{{ __('commerce-users::account.addresses.delete') }}</button>

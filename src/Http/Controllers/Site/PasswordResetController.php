@@ -79,7 +79,7 @@ class PasswordResetController extends Controller
                 ->withErrors(['email' => __('commerce-users::auth.reset.invalid')]);
         }
 
-        return redirect()->route('commerce-users.login')->with('verified_email', $request->input('email'))
+        return redirect()->to(CommerceUsers::route('commerce-users.login'))->with('verified_email', $request->input('email'))
             ->with('success', __('commerce-users::auth.reset.success'));
     }
 }

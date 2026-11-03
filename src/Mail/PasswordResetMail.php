@@ -2,6 +2,7 @@
 
 namespace Weboldalnet\CommerceUsers\Mail;
 
+use Weboldalnet\CommerceUsers\CommerceUsers;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -22,7 +23,7 @@ class PasswordResetMail extends Mailable
             ->subject(__('commerce-users::mail.password_reset.subject', ['shop' => config('app.shop_name')]))
             ->view('commerce-users::mail.password-reset', [
                 'user' => $this->user,
-                'resetUrl' => route('commerce-users.password.reset', ['token' => $this->token, 'email' => $this->user->email]),
+                'resetUrl' => CommerceUsers::route('commerce-users.password.reset', ['token' => $this->token, 'email' => $this->user->email]),
                 'expireMinutes' => (int) config('commerce-users.password_reset_expire_minutes', 60) ?: 60,
             ]);
     }

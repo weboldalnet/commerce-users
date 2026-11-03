@@ -18,7 +18,7 @@
 
     <div class="cu-divider"></div>
 
-    <form method="POST" action="{{ route('commerce-users.verification.resend') }}" novalidate>
+    <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.verification.resend') }}" novalidate>
         @csrf
         <div class="form-group">
             <label for="cu_email">{{ __('commerce-users::common.fields.email') }}</label>
@@ -31,5 +31,5 @@
 @endsection
 
 @section('cu_after')
-    <p class="cu-auth-alt"><a href="{{ route('commerce-users.login') }}">{{ __('commerce-users::auth.register_done.continue_to_login') }}</a></p>
+    <p class="cu-auth-alt"><a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.login') }}">{{ __('commerce-users::auth.register_done.continue_to_login') }}</a></p>
 @endsection

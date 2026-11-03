@@ -4,7 +4,7 @@
 
 @section('cu_content')
     <div class="cu-card" style="max-width: 560px">
-        <form method="POST" action="{{ route('commerce-users.password.change') }}" novalidate>
+        <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.password.change') }}" novalidate>
             @csrf @method('PUT')
             {{-- a böngésző jelszókezelője tudja, melyik fiókhoz menti az új jelszót --}}
             <input type="email" name="username" value="{{ $user->email }}" autocomplete="username" class="d-none" tabindex="-1" aria-hidden="true">

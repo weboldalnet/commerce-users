@@ -1,4 +1,16 @@
 ## [Unreleased]
+### Többnyelvű vásárlói fiókok: nyelvi címek
+Migrációt NEM igényel. Egynyelvű projektben (és alapnyelven) minden cím és útvonalnév változatlan.
+- Többnyelvű site-on a fiók útvonalai nyelvenként élnek: az alapnyelv a megszokott `/fiok/…` címeken és
+  `commerce-users.*` neveken, a többi nyelv `/{nyelv}/account/…` címen (`config url_words`), `commerce-users.{nyelv}.*`
+  néven. Eddig angol oldalról a fejléc belépés-gombja a magyar belépő oldalra vitt (és a nyelv magyarra váltott).
+- `CommerceUsers::route()` / `routeName()`: a kérés nyelvének útvonala (a modul minden linkje, átirányítása,
+  aláírt aktiváló linkje és a jelszó-visszaállító levél ezt használja); a fiókmenü pontjai (a befogadóéi is, pl.
+  `site.webshop.en.account.orders`) a nyelvi címre mutatnak, az aktív-jelölés minden nyelven működik.
+- A core nyelvválasztója és hreflang-sorai a fiókoldal nyelvi párjára mutatnak (`SetLocaleAlternates` —
+  áthidalás, amíg a core-ban nincs erre bővítési pont).
+- Próbához: `config commerce-users.locales` (élesben üresen hagyandó).
+
 ### Többnyelvű vásárlói fiókok: a felület szövegei nyelvi fájlokban
 Migrációt NEM igényel. Magyarul a felület betűre változatlan.
 - `resources/lang/{hu,en}/` (`__('commerce-users::…')`, 165 kulcs): bejelentkezés, regisztráció, aktiválás, jelszó, profil,

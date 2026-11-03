@@ -26,7 +26,7 @@ class RegisterController extends Controller
     {
         // Csapda-mező: ember nem látja, a bot kitölti. Ilyenkor sikert mutatunk, de nem hozunk létre fiókot.
         if ($request->filled('website')) {
-            return redirect()->route('commerce-users.register.done');
+            return redirect()->to(CommerceUsers::route('commerce-users.register.done'));
         }
 
         $key = 'commerce-users-register|' . $request->ip();
@@ -67,7 +67,7 @@ class RegisterController extends Controller
 
         ActivationService::send($user);
 
-        return redirect()->route('commerce-users.register.done')->with('registered_email', $user->email);
+        return redirect()->to(CommerceUsers::route('commerce-users.register.done'))->with('registered_email', $user->email);
     }
 
     public function done()
@@ -91,13 +91,13 @@ class RegisterController extends Controller
         }
 
         if ($user->isVerified()) {
-            return redirect()->route('commerce-users.login')->with('verified_email', $user->email)
+            return redirect()->to(CommerceUsers::route('commerce-users.login'))->with('verified_email', $user->email)
                 ->with('info', __('commerce-users::auth.activation.already_active'));
         }
 
         ActivationService::activate($user);
 
-        return redirect()->route('commerce-users.login')->with('verified_email', $user->email)
+        return redirect()->to(CommerceUsers::route('commerce-users.login'))->with('verified_email', $user->email)
             ->with('success', __('commerce-users::auth.activation.success'));
     }
 

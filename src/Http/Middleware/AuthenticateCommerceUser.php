@@ -31,7 +31,7 @@ class AuthenticateCommerceUser
                 return response()->json(['message' => __('commerce-users::auth.login.required_json')], 401);
             }
 
-            return redirect()->guest(route('commerce-users.login'))
+            return redirect()->guest(CommerceUsers::route('commerce-users.login'))
                 ->with('info', __('commerce-users::auth.login.required'));
         }
 

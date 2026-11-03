@@ -11,7 +11,7 @@
 @section('cu_content')
     <div class="cu-card">
         <form method="POST" novalidate
-              action="{{ $address->exists ? route('commerce-users.addresses.update', $address->id) : route('commerce-users.addresses.store', $type) }}">
+              action="{{ $address->exists ? \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.addresses.update', $address->id) : \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.addresses.store', $type) }}">
             @csrf
             @if($address->exists) @method('PUT') @endif
 
@@ -95,7 +95,7 @@
 
             <div class="d-flex flex-wrap gap-2">
                 <button type="submit" class="btn btn-primary mr-2 mb-2">{{ __('commerce-users::account.address_form.save') }}</button>
-                <a href="{{ route('commerce-users.addresses.index') }}" class="btn btn-outline-secondary mb-2">{{ __('commerce-users::account.address_form.cancel') }}</a>
+                <a href="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.addresses.index') }}" class="btn btn-outline-secondary mb-2">{{ __('commerce-users::account.address_form.cancel') }}</a>
             </div>
         </form>
     </div>

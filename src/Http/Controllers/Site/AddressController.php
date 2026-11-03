@@ -33,7 +33,7 @@ class AddressController extends Controller
         $user = CommerceUsers::user();
 
         if (AddressService::countOfType($user, $type) >= AddressService::maxPerType()) {
-            return redirect()->route('commerce-users.addresses.index')
+            return redirect()->to(CommerceUsers::route('commerce-users.addresses.index'))
                 ->with('error', __('commerce-users::account.addresses.limit_reached'));
         }
 
@@ -54,13 +54,13 @@ class AddressController extends Controller
         $user = CommerceUsers::user();
 
         if (AddressService::countOfType($user, $type) >= AddressService::maxPerType()) {
-            return redirect()->route('commerce-users.addresses.index')
+            return redirect()->to(CommerceUsers::route('commerce-users.addresses.index'))
                 ->with('error', __('commerce-users::account.addresses.limit_reached'));
         }
 
         AddressService::save($user, $type, $this->validated($request, $type));
 
-        return redirect()->route('commerce-users.addresses.index')->with('success', __('commerce-users::account.addresses.saved'));
+        return redirect()->to(CommerceUsers::route('commerce-users.addresses.index'))->with('success', __('commerce-users::account.addresses.saved'));
     }
 
     public function edit(int $address)
@@ -81,7 +81,7 @@ class AddressController extends Controller
 
         AddressService::save($user, $address->type, $this->validated($request, $address->type), $address);
 
-        return redirect()->route('commerce-users.addresses.index')->with('success', __('commerce-users::account.addresses.saved'));
+        return redirect()->to(CommerceUsers::route('commerce-users.addresses.index'))->with('success', __('commerce-users::account.addresses.saved'));
     }
 
     public function makeDefault(int $address)
@@ -89,7 +89,7 @@ class AddressController extends Controller
         $address = CommerceUsers::user()->addresses()->findOrFail($address);
         AddressService::makeDefault($address);
 
-        return redirect()->route('commerce-users.addresses.index')
+        return redirect()->to(CommerceUsers::route('commerce-users.addresses.index'))
             ->with('success', $address->type === CommerceUserAddress::TYPE_BILLING
                 ? __('commerce-users::account.addresses.made_default_billing')
                 : __('commerce-users::account.addresses.made_default_shipping'));
@@ -100,7 +100,7 @@ class AddressController extends Controller
         $address = CommerceUsers::user()->addresses()->findOrFail($address);
         AddressService::delete($address);
 
-        return redirect()->route('commerce-users.addresses.index')->with('success', __('commerce-users::account.addresses.deleted'));
+        return redirect()->to(CommerceUsers::route('commerce-users.addresses.index'))->with('success', __('commerce-users::account.addresses.deleted'));
     }
 
     private function validated(Request $request, string $type): array

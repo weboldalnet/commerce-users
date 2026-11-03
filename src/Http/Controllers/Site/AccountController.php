@@ -42,7 +42,7 @@ class AccountController extends Controller
             'phone' => $data['phone'] ? trim($data['phone']) : null,
         ])->save();
 
-        return redirect()->route('commerce-users.account')->with('success', __('commerce-users::account.profile.saved'));
+        return redirect()->to(CommerceUsers::route('commerce-users.account'))->with('success', __('commerce-users::account.profile.saved'));
     }
 
     public function editPassword()
@@ -76,6 +76,6 @@ class AccountController extends Controller
         $user->save();
         $request->session()->regenerate();
 
-        return redirect()->route('commerce-users.password.edit')->with('success', __('commerce-users::account.password.saved'));
+        return redirect()->to(CommerceUsers::route('commerce-users.password.edit'))->with('success', __('commerce-users::account.password.saved'));
     }
 }

@@ -15,8 +15,29 @@
 return [
     'enabled' => env('COMMERCE_USERS_ENABLED', false),
 
-    // A site oldali fiók-útvonalak előtagja: /fiok/belepes, /fiok/regisztracio …
+    // A site oldali fiók-útvonalak előtagja az alapnyelven: /fiok/belepes, /fiok/regisztracio …
     'route_prefix' => 'fiok',
+
+    /*
+     | Többnyelvű site: a fiók-útvonalak útszavai nyelvenként (/fiok/belepes → /en/account/login). Az alapnyelv címei
+     | előtag nélkül élnek (az előtag a route_prefix), a többi nyelvé /{nyelv}/ előtaggal. Hiányzó nyelvnél vagy kulcsnál
+     | az angol, végül a magyar szó. A nyelvet a core adja (Lang::siteLocales).
+     */
+    'url_words' => [
+        'hu' => [
+            'prefix' => 'fiok', 'login' => 'belepes', 'register' => 'regisztracio', 'done' => 'kesz',
+            'forgot' => 'elfelejtett-jelszo', 'reset' => 'uj-jelszo', 'verify' => 'aktivalas', 'resend' => 'aktivalo-level',
+            'logout' => 'kilepes', 'password' => 'jelszo', 'addresses' => 'cimek', 'new' => 'uj', 'default' => 'elsodleges',
+        ],
+        'en' => [
+            'prefix' => 'account', 'login' => 'login', 'register' => 'register', 'done' => 'done',
+            'forgot' => 'forgot-password', 'reset' => 'reset-password', 'verify' => 'activate', 'resend' => 'resend-activation',
+            'logout' => 'logout', 'password' => 'password', 'addresses' => 'addresses', 'new' => 'new', 'default' => 'default',
+        ],
+    ],
+
+    // Próbához: a modul nyelvei a core nyelvkészlete helyett (pl. ['hu', 'en']). Élesben üresen hagyandó.
+    'locales' => null,
 
     // Az aktiváló link érvényessége órában
     'activation_expire_hours' => 48,

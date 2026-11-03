@@ -30,11 +30,11 @@
                         @endif
                         @foreach($cuMenu as $cuItem)
                             @php($cuActive = $cuRoute && \Illuminate\Support\Str::is($cuItem['activeRoutes'] ?: [$cuItem['route']], $cuRoute))
-                            <a href="{{ route($cuItem['route']) }}" class="@if($cuActive) is-active @endif" @if($cuActive) aria-current="page" @endif>
+                            <a href="{{ $cuItem['url'] }}" class="@if($cuActive) is-active @endif" @if($cuActive) aria-current="page" @endif>
                                 <i class="fa-solid {{ $cuItem['icon'] }}"></i> {{ $cuItem['label'] }}
                             </a>
                         @endforeach
-                        <form method="POST" action="{{ route('commerce-users.logout') }}">
+                        <form method="POST" action="{{ \Weboldalnet\CommerceUsers\CommerceUsers::route('commerce-users.logout') }}">
                             @csrf
                             <button type="submit"><i class="fa-solid fa-right-from-bracket"></i> {{ __('commerce-users::common.logout') }}</button>
                         </form>
